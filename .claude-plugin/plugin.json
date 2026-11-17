@@ -1,6 +1,6 @@
 {
   "name": "he-to-en",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Translates Hebrew prompts to English (Haiku, with an offline Argos fallback) before they reach Claude.",
   "author": { "name": "GIAMAT13" },
   "homepage": "https://github.com/GIAMAT13/claude-translate-mod",

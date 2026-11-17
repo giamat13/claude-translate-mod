@@ -1,8 +1,10 @@
 import type { Register } from 'claude-code'
 
 const HEB = /[֐-׿]/
-const MARK = '\n[auto-translated from Hebrew; if anything is unclear, check the source via mcp__he-to-en__original]'
+const MARK = '\n[auto-translated from Hebrew. Read the Hebrew original via mcp__he-to-en__original only if something here is truly unclear and the answer depends on it.]'
 const TOOL = 'mcp__he-to-en__original'
+// Translation state at every session start: true = both directions on, false = off. /he changes it for the session.
+const DEFAULT_ON = true
 
 async function mark($: any, orig: string, en: string) {
   const list = (((await $.store.get('orig')) as string[] | undefined) ?? []).concat(orig).slice(-20)
@@ -91,20 +93,20 @@ async function applyHe($: any, args: string): Promise<string> {
 }
 
 export const register: Register = (on) => {
-  // Off at every session start: the person turns it on with /he.
+  // DEFAULT_ON at every session start; /he turns it on or off.
   on('session.start', async ($, e, next) => {
     await $.command.register({ name: 'he', description: 'Translation: /he on|off|status (both), /he in on|off|status (your prompts to English), /he out on|off|status (replies to Hebrew), /he pane (live Hebrew side panel)' })
-    // Off in a new session, but kept across a hot reload of this module.
+    // Set to DEFAULT_ON in a new session, but kept across a hot reload of this module.
     const started = (await $.session.usage()).startedAt
     if ((await $.store.get('session')) !== started) {
       await $.store.set('session', started)
-      await $.store.set('on', false)
-      await $.store.set('out', false)
+      await $.store.set('on', DEFAULT_ON)
+      await $.store.set('out', DEFAULT_ON)
     }
     await $.tool.register({
       name: 'original',
       description:
-        'Returns the original Hebrew text of the latest auto-translated user message(s). If anything in the message is unclear, ambiguous, odd or looks like a mistranslation (for example a single word with no context), check the source with this tool before acting or guessing.',
+        'Returns the original Hebrew text of the latest auto-translated user message(s). Use it only when a message is truly unclear or looks like a mistranslation and the answer depends on it. Do not call it on every message or every turn; most messages need no check.',
       inputSchema: { type: 'object', properties: { n: { type: 'number', description: 'how many recent messages, default 1' } } },
       isDeferred: false,
     })
