@@ -1,7 +1,7 @@
 import type { Register } from 'claude-code'
 
 const HEB = /[֐-׿]/
-const MARK = '\n[auto-translated from Hebrew; original via mcp__he-to-en__original only if needed]'
+const MARK = '\n[auto-translated from Hebrew; if anything is unclear, check the source via mcp__he-to-en__original]'
 const TOOL = 'mcp__he-to-en__original'
 
 async function mark($: any, orig: string, en: string) {
@@ -104,7 +104,7 @@ export const register: Register = (on) => {
     await $.tool.register({
       name: 'original',
       description:
-        'Returns the original Hebrew text of the latest auto-translated user message(s). Use only if the translation is unclear.',
+        'Returns the original Hebrew text of the latest auto-translated user message(s). If anything in the message is unclear, ambiguous, odd or looks like a mistranslation (for example a single word with no context), check the source with this tool before acting or guessing.',
       inputSchema: { type: 'object', properties: { n: { type: 'number', description: 'how many recent messages, default 1' } } },
       isDeferred: false,
     })
