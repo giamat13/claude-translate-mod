@@ -1,0 +1,5 @@
+{
+  "name": "claude-translate-mod",
+  "owner": { "name": "GIAMAT13" },
+  "plugins": [{ "name": "he-to-en", "source": "./" }]
+}

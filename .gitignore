@@ -1,0 +1,8 @@
+venv/
+.venv/
+__pycache__/
+*.log
+*.pyc
+.claude-plugin/types/
+.DS_Store
+.agent-dashboard/
